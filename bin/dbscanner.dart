@@ -59,8 +59,9 @@ class DBScanner {
         tables().getTable(tableName).fields().addField(
             item.fields['COLUMN_NAME'],
             item.fields['DATA_TYPE'],
-            item.fields['DATA_TYPE'] == 'int'
-                ? 11
+            item.fields['DATA_TYPE'] == 'int' ||
+                    item.fields['DATA_TYPE'] == 'bigint'
+                ? item.fields['NUMERIC_PRECISION']
                 : item.fields['CHARACTER_MAXIMUM_LENGTH'],
             item.fields['COLUMN_KEY'] == 'PRI' ? true : false,
             item.fields['IS_NULLABLE'] == 'NO' ? false : true);
