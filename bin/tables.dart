@@ -3,6 +3,8 @@ import 'table.dart';
 class Tables {
   final List<Table> _listTable = [];
 
+  List get listTable => _listTable;
+
   Table addTable(String name, bool isView) {
     var table = Table();
     table.name = name;
@@ -22,11 +24,13 @@ class Tables {
   }
 
   // ignore: missing_return
-  Table getTable(String name) {
+  Table getTableByName(String name) {
     for (var i = 0; i < _listTable.length; i++) {
       if (_listTable[i].name == name) return _listTable[i];
     }
   }
+
+  Table getTableByIndex(int index) => _listTable[index];
 
   int countTable() {
     return _listTable.length;

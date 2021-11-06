@@ -4,7 +4,6 @@ import 'tables.dart';
 
 class DBScanner {
   MySqlConnection _conn;
-  final List _listTable = [];
   Tables _tables;
 
   DBScanner() {
@@ -21,26 +20,20 @@ class DBScanner {
           ConnectionSettings(host: host, port: port, user: user, db: dbName));
 
       print('---Connect To Database $dbName Success---');
-      //mengambil tabel dari database untuk sementara
+      //mengambil tabel dari database
       await _conn.query('SHOW TABLES').then((value) {
         for (var row in value) {
           row.fields.forEach((key, tableName) async {
-            _listTable.add(tableName);
+            tables().addTable(tableName, null);
           });
         }
       });
       //mengambil isView dari database dan membuat objek
-      for (var i = 0; i < _listTable.length; i++) {
-        await _conn
-            .query(
-                "SELECT TABLE_TYPE FROM information_schema.tables WHERE TABLE_SCHEMA = '$dbName' AND TABLE_NAME = '${_listTable[i]}'")
-            .then((value) {
-          for (var item in value) {
-            tables().addTable(_listTable[i],
-                item.fields['TABLE_TYPE'] == 'BASE TABLE' ? false : true);
-          }
-        });
-        await _getField(dbName, _listTable[i]);
+      for (var i = 0; i < tables().countTable(); i++) {
+        var table = tables().getTableByIndex(i);
+
+        await _getIsView(dbName, table.name);
+        await _getField(dbName, table.name);
       }
 
       tables().getAllTable();
@@ -50,19 +43,29 @@ class DBScanner {
     }
   }
 
+  Future<void> _getIsView(String dbName, String tableName) async {
+    await _conn
+        .query(
+            "SELECT TABLE_TYPE FROM information_schema.tables WHERE TABLE_SCHEMA = '$dbName' AND TABLE_NAME = '$tableName'")
+        .then((value) {
+      for (var item in value) {
+        tables().getTableByName(tableName).isView =
+            item.fields['TABLE_TYPE'] == 'BASE TABLE' ? false : true;
+      }
+    });
+  }
+
   Future<void> _getField(String dbName, String tableName) async {
     await _conn
         .query(
             "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$dbName' AND TABLE_NAME = '$tableName'")
         .then((value) {
       for (var item in value) {
-        tables().getTable(tableName).fields().addField(
+        tables().getTableByName(tableName).fields().addField(
             item.fields['COLUMN_NAME'],
             item.fields['DATA_TYPE'],
-            item.fields['DATA_TYPE'] == 'int' ||
-                    item.fields['DATA_TYPE'] == 'bigint'
-                ? item.fields['NUMERIC_PRECISION']
-                : item.fields['CHARACTER_MAXIMUM_LENGTH'],
+            item.fields['CHARACTER_MAXIMUM_LENGTH'] ??
+                item.fields['NUMERIC_PRECISION'],
             item.fields['COLUMN_KEY'] == 'PRI' ? true : false,
             item.fields['IS_NULLABLE'] == 'NO' ? false : true);
       }

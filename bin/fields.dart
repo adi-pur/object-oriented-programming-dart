@@ -27,11 +27,13 @@ class Fields {
   }
 
   // ignore: missing_return
-  Field getField(String name) {
+  Field getFieldByName(String name) {
     for (var i = 0; i < _listField.length; i++) {
       if (_listField[i].name == name) return _listField[i];
     }
   }
+
+  Field getFieldByIndex(int index) => _listField[index];
 
   int countField() {
     return _listField.length;

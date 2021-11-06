@@ -13,25 +13,25 @@ Future<void> main(List<String> arguments) async {
       .addField('id', 'int', 11, false, true);
   dbScanner
       .tables()
-      .getTable('mahasiswa')
+      .getTableByName('mahasiswa')
       .fields()
       .addField('nama', 'varchar', 255, false, false);
-  dbScanner
-      .tables()
-      .addTable('test', false)
-      .fields()
-      .addField('id', 'int', 11, false, true);
+  // dbScanner
+  //     .tables()
+  //     .addTable('test', false)
+  //     .fields()
+  //     .addField('id', 'int', 11, false, true);
 
   dbScanner.tables().getAllTable();
 
   print(dbScanner
       .tables()
-      .getTable('golongan')
+      .getTableByName('golongan')
       .fields()
-      .getField('id')
+      .getFieldByName('id')
       .dataLength);
 
-  dbScanner.tables().deleteTable('users');
-  dbScanner.tables().getTable('golongan').fields().deleteField('id');
-  dbScanner.tables().getTable('mahasiswa').show();
+  // dbScanner.tables().deleteTable('users');
+  // dbScanner.tables().getTable('golongan').fields().deleteField('id');
+  // dbScanner.tables().getTable('mahasiswa').show();
 }
