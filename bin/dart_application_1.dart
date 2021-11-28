@@ -1,37 +1,21 @@
-import 'dbscanner.dart';
+import 'dart:io';
+
+import 'package:dart_application_1/base/base62.dart';
 
 Future<void> main(List<String> arguments) async {
-  var dbScanner = DBScanner();
+  var base62 = Base62();
+  int num;
+  // List<int> result = [];
+  num = int.tryParse(stdin.readLineSync());
+  print(base62.toBase62(num));
 
-  await dbScanner.scanMySQL(
-      host: 'localhost', port: 3306, dbName: 'belajar', user: 'root');
+  var a = stdin.readLineSync();
+  print(base62.toDecimal(a));
 
-  dbScanner
-      .tables()
-      .addTable('mahasiswa', false)
-      .fields()
-      .addField('id', 'int', 11, false, true);
-  dbScanner
-      .tables()
-      .getTableByName('mahasiswa')
-      .fields()
-      .addField('nama', 'varchar', 255, false, false);
-  // dbScanner
-  //     .tables()
-  //     .addTable('test', false)
-  //     .fields()
-  //     .addField('id', 'int', 11, false, true);
+  // while (num > 0) {
+  //   result.add(num % 62);
+  //   num = (num / 62).floor();
+  // }
 
-  dbScanner.tables().getAllTable();
-
-  print(dbScanner
-      .tables()
-      .getTableByName('golongan')
-      .fields()
-      .getFieldByName('id')
-      .dataLength);
-
-  // dbScanner.tables().deleteTable('users');
-  // dbScanner.tables().getTable('golongan').fields().deleteField('id');
-  // dbScanner.tables().getTable('mahasiswa').show();
+  // print(result.reversed.toList().toString());
 }

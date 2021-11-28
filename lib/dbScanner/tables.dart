@@ -36,9 +36,13 @@ class Tables {
     return _listTable.length;
   }
 
-  void deleteTable(String name) {
+  void deleteTableByName(String name) {
     for (var i = 0; i < _listTable.length; i++) {
       if (_listTable[i].name == name) _listTable.removeAt(i);
     }
+  }
+
+  void deleteTableByIndex(int index) {
+    _listTable.removeAt(index);
   }
 }

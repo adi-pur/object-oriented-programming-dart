@@ -44,4 +44,8 @@ class Fields {
       if (_listField[i].name == name) _listField.removeAt(i);
     }
   }
+
+  void deleteFieldByIndex(int index) {
+    _listField.removeAt(index);
+  }
 }
